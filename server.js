@@ -16,7 +16,15 @@ const PORT = process.env.PORT || 3000;
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "templates"));
 app.use("/assets", express.static(path.join(__dirname, "assets")));
-app.use("/renders", express.static(path.join(__dirname, "renders"), { maxAge: "365d" }));
+app.use("/renders", (req, res, next) => {
+  if (req.path.endsWith(".png")) {
+    res.setHeader("Content-Type", "image/png");
+  } else if (req.path.endsWith(".jpg") || req.path.endsWith(".jpeg")) {
+    res.setHeader("Content-Type", "image/jpeg");
+  }
+  next();
+}, express.static(path.join(__dirname, "renders"), { maxAge: "365d" }));
+
 app.use(bodyParser.json({ limit: "2mb" }));
 
 // --- Template routes (server-side render of HTML) ---
