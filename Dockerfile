@@ -1,5 +1,5 @@
 # Includes Chromium/WebKit/Firefox + all required Linux libs
-FROM mcr.microsoft.com/playwright:v1.45.0-jammy
+FROM mcr.microsoft.com/playwright:v1.55.0-jammy
 
 WORKDIR /app
 
