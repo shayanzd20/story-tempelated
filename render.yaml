@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: templated-instagram-story
+    env: docker
+    plan: free
+    autoDeploy: true
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: staging
+      - key: PORT
+        value: 10000
