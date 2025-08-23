@@ -67,7 +67,7 @@ app.post("/api/render", async (req, res) => {
     await page.screenshot({ path: outPath, type: "png" });
     await ctx.close();
 
-    const publicUrl = `${req.protocol}://${req.get("host")}/renders/${id}.png`;
+    const publicUrl = `https://${req.get("host")}/renders/${id}.png`;
     res.json({ id, url: publicUrl, width, height });
   } catch (e) {
     console.error(e);
