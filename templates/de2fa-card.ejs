@@ -61,6 +61,8 @@
 
     /* Header (top-end) */
     .story__header {
+      display: block;
+      /* Ensure the header stacks its children vertically */
       position: absolute;
       top: 5%;
       inset-inline: 8%;
@@ -80,6 +82,17 @@
       color: #5c5c5c;
       text-align: right;
       /* Align text to the right */
+      background-color: white;
+      /* Add white background */
+      padding: 8px 12px;
+      /* Add padding for spacing */
+      border-radius: 8px;
+      /* Optional: Add rounded corners */
+      display: inline-block;
+      /* Restrict background to text width */
+      margin-bottom: 8px;
+      /* Add spacing below the title */
+
     }
 
     .story__subtitle {
@@ -90,6 +103,15 @@
       letter-spacing: 2px;
       color: #8a8a8a;
       text-transform: uppercase;
+      background-color: white;
+      /* Add white background */
+      padding: 4px 8px;
+      /* Add padding for spacing */
+      border-radius: 6px;
+      /* Optional: Add rounded corners */
+      display: inline-block;
+      /* Restrict background to text width */
+
     }
 
     /* Media (bottom ~2/3) */
