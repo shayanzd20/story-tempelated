@@ -12,9 +12,12 @@
   },
   "dependencies": {
     "body-parser": "^1.20.2",
+    "dotenv": "^17.2.1",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
+    "node-fetch": "^3.3.2",
     "playwright": "^1.45.0",
+    "scraper-instagram": "^1.0.17",
     "uuid": "^9.0.1"
   },
   "author": "",

@@ -96,9 +96,11 @@
     }
 
     .story__subtitle {
+      position: relative;
+      z-index: 1;
       font-family: "Vazirmatn", "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Arial;
       margin-top: 8px;
-      font-size: clamp(18px, 2.2vw, 28px);
+      font-size: 3rem;
       font-weight: 500;
       letter-spacing: 2px;
       color: #8a8a8a;
@@ -117,11 +119,14 @@
     /* Media (bottom ~2/3) */
     .story__media {
       position: absolute;
+      z-index: 0
+        /* Ensure media is behind text */
+      ;
       top: 33.333%;
       left: 1%;
       right: 7%;
       bottom: 2%;
-      background: #f8f5f2 center/cover no-repeat url("<%= (data.imageUrl || '').replace(/\"/g,'&quot;') || '' %>");
+      background: #f8f5f2 center/cover no-repeat url('<%= (data.imageUrl || "").replace(/"/g, '&quot; ') %>');
       border-radius: 12px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
       overflow: hidden;
@@ -216,7 +221,9 @@
         <p class="story__subtitle"><%= data.subtitle || 'متنی که میتونه این پایین قرار بگیره' %></p>
       </header>
 
-      <div class="story__media" role="img" aria-label="<%= data.imageAlt || 'story image' %>"></div>
+      <div class="story__media" role="img" aria-label="<%= data.imageAlt || 'story image' %>"
+        style="background-image: url('<%= (data.imageUrl || 'https://picsum.photos/200/300').replace(/"/g, '&quot;') %>');">
+      </div>
 
       <footer class="story__footer">
         <p class="story__caption"><%= data.caption || 'Start your day with nourishment' %></p>
