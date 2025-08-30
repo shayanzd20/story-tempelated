@@ -273,16 +273,9 @@
       if (subtitle) {
         const len = subtitle.textContent.trim().length;
 
-        if (len > 300 && len <= 400) {
-          subtitle.classList.add("scale-1-2"); // 1/2 size
-          title.classList.add("smaller"); // shrink title
-        } else if (len > 200 && len <= 300) {
+        if (len > 200) {
           subtitle.classList.add("scale-2-3"); // 2/3 size
           title.classList.add("smaller"); // shrink title
-        } else if (len > 400) {
-          // If it goes crazy long, force 1/2 too
-          subtitle.classList.add("scale-1-2");
-          title.classList.add("smaller");
         }
       }
     });
