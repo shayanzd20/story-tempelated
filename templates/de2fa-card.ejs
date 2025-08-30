@@ -100,10 +100,19 @@
 
     }
 
-    .story__subtitle.small {
-      font-size: calc(3rem * 0.5);
-      /* half size */
+
+    /* Subtitle scaling */
+    .story__subtitle.scale-2-3 {
+      font-size: calc(3rem * 0.66);
+      /* 2/3 */
     }
+
+    .story__subtitle.scale-1-2 {
+      font-size: calc(3rem * 0.5);
+      /* 1/2 */
+    }
+
+
 
     .story__subtitle {
       position: relative;
@@ -260,9 +269,21 @@
       const subtitle = document.getElementById("storySubtitle");
       const title = document.getElementById("storyTitle");
 
-      if (subtitle && subtitle.textContent.length > 200) {
-        subtitle.classList.add("small");
-        title.classList.add("small");
+
+      if (subtitle) {
+        const len = subtitle.textContent.trim().length;
+
+        if (len > 300 && len <= 400) {
+          subtitle.classList.add("scale-1-2"); // 1/2 size
+          title.classList.add("smaller"); // shrink title
+        } else if (len > 200 && len <= 300) {
+          subtitle.classList.add("scale-2-3"); // 2/3 size
+          title.classList.add("smaller"); // shrink title
+        } else if (len > 400) {
+          // If it goes crazy long, force 1/2 too
+          subtitle.classList.add("scale-1-2");
+          title.classList.add("smaller");
+        }
       }
     });
   </script>
