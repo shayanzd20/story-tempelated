@@ -79,7 +79,7 @@
       letter-spacing: 1px;
       font-size: clamp(42px, 6vw, 84px);
       font-weight: 900;
-      color: #5c5c5c;
+      color: #202020;
       text-align: right;
       /* Align text to the right */
       background-color: white;
@@ -103,7 +103,7 @@
       font-size: 3rem;
       font-weight: 500;
       letter-spacing: 2px;
-      color: #8a8a8a;
+      color: #3f3f3f;
       text-transform: uppercase;
       background-color: white;
       /* Add white background */
@@ -113,24 +113,27 @@
       /* Optional: Add rounded corners */
       display: inline-block;
       /* Restrict background to text width */
+      background: rgba(255, 255, 255, 0.8);
 
     }
 
     /* Media (bottom ~2/3) */
     .story__media {
       position: absolute;
-      z-index: 0
-        /* Ensure media is behind text */
-      ;
+      z-index: 0;
       top: 33.333%;
       left: 1%;
       right: 7%;
       bottom: 2%;
-      background: #f8f5f2 center/cover no-repeat url('<%= (data.imageUrl || "").replace(/"/g, '&quot; ') %>');
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-color: #f8f5f2;
       border-radius: 12px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
       overflow: hidden;
     }
+
 
     /* Footer (caption & tags) */
     .story__footer {
@@ -222,22 +225,24 @@
       </header>
 
       <div class="story__media" role="img" aria-label="<%= data.imageAlt || 'story image' %>"
-        style="background-image: url('<%= (data.imageUrl || 'https://picsum.photos/200/300').replace(/"/g, '&quot;') %>');">
+        style="background-image: url('<%- encodeURI(data.imageUrl || 'https://via.placeholder.com/1080x1920') %>');">
       </div>
 
-      <footer class="story__footer">
-        <p class="story__caption"><%= data.caption || 'Start your day with nourishment' %></p>
-        <% if (data.tags && data.tags.length) { %>
-        <div class="story__tags">
-          <% data.tags.forEach(function(tag){ %>
-          <span class="story__tag"><%= tag %></span>
-          <% }); %>
-        </div>
-        <% } %>
-      </footer>
-
-      <div class="story__handle"><%= data.handleText || '@minimalfoodie' %></div>
     </div>
+
+    <footer class="story__footer">
+      <p class="story__caption"><%= data.caption || '' %></p>
+      <% if (data.tags && data.tags.length) { %>
+      <div class="story__tags">
+        <% data.tags.forEach(function(tag){ %>
+        <span class="story__tag"><%= tag %></span>
+        <% }); %>
+      </div>
+      <% } %>
+    </footer>
+
+    <div class="story__handle"><%= data.handleText || '@minimalfoodie' %></div>
+  </div>
   </div>
 </body>
 

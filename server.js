@@ -31,8 +31,13 @@ app.use(bodyParser.json({ limit: "2mb" }));
 app.get("/templates/de2fa-card", (req, res) => {
   const b64 = String(req.query.payload || "");
   let data = {};
-  try { data = JSON.parse(Buffer.from(b64, "base64url").toString("utf8")); } catch {}
-  res.render("de2fa-card", { data });
+  try {
+    data = JSON.parse(Buffer.from(b64, "base64url").toString("utf8"));
+    res.render("de2fa-card", { data });
+  } catch (error) {
+    console.error("Error parsing payload:", error);
+    res.status(400).json({ error: "Invalid payload format" });
+  }
 });
 
 // --- Browser pool (simple) ---
@@ -42,24 +47,48 @@ async function getBrowser() {
   return browser;
 }
 
+
+async function fetchAsDataUrl(src) {
+  const r = await fetch(src);
+  if (!r.ok) throw new Error(`Image fetch failed: ${r.status}`);
+  const buf = await r.arrayBuffer();
+  const b64 = Buffer.from(buf).toString("base64");
+  const mime = r.headers.get("content-type") || "image/jpeg";
+  return `data:${mime};base64,${b64}`;
+}
+
 // --- Render API ---
 app.post("/api/render", async (req, res) => {
   const { templateId = "de2fa-card", width = 768, height = 1365, data = {} } = req.body;
-
   if (templateId !== "de2fa-card") {
     return res.status(400).json({ error: "Unknown templateId" });
   }
 
   try {
-    const payload = Buffer.from(JSON.stringify(data)).toString("base64url");
-    const url = `http://localhost:${PORT}/templates/${templateId}?payload=${payload}`;
+    // A) make unstable URLs stable (your step A)
+    const dataCopy = { ...data };
+    if (dataCopy.imageUrl?.startsWith("http")) {
+      dataCopy.imageUrl = await fetchAsDataUrl(dataCopy.imageUrl); // from my previous message
+    }
+
+    // B) render EJS to HTML string (no payload in URL)
+    const html = await new Promise((resolve, reject) => {
+      app.render("de2fa-card", { data: dataCopy }, (err, out) => err ? reject(err) : resolve(out));
+    });
 
     const b = await getBrowser();
     const ctx = await b.newContext({ viewport: { width, height }, deviceScaleFactor: 2 });
     const page = await ctx.newPage();
 
-    await page.goto(url, { waitUntil: "networkidle" });
+    // Load the HTML directly
+    await page.setContent(html, { waitUntil: "load" });
     await page.evaluateHandle(`document.fonts ? document.fonts.ready : Promise.resolve()`);
+
+    // Optional: wait until background-image is actually applied
+    await page.waitForFunction(() => {
+      const el = document.querySelector(".story__media");
+      return el && getComputedStyle(el).backgroundImage !== "none";
+    }, { timeout: 10000 });
 
     await fs.promises.mkdir(path.join(__dirname, "renders"), { recursive: true });
     const id = uuidv4();
@@ -71,7 +100,7 @@ app.post("/api/render", async (req, res) => {
     res.json({ id, url: publicUrl, width, height });
   } catch (e) {
     console.error(e);
-    res.status(500).json({ error: "Render failed" });
+    res.status(500).json({ error: "Render failed", detail: String(e) });
   }
 });
 
