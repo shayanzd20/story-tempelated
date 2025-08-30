@@ -73,6 +73,11 @@
 
     }
 
+    .story__title.small {
+      font-size: calc(clamp(42px, 6vw, 84px) * 0.66);
+      /* 2/3 */
+    }
+
     .story__title {
       font-family: "Vazirmatn", "Cormorant Garamond", serif;
       margin: 0;
@@ -93,6 +98,11 @@
       margin-bottom: 8px;
       /* Add spacing below the title */
 
+    }
+
+    .story__subtitle.small {
+      font-size: calc(3rem * 0.5);
+      /* half size */
     }
 
     .story__subtitle {
@@ -220,8 +230,8 @@
       <div class="story__texture"></div>
 
       <header class="story__header">
-        <h1 class="story__title"><%= data.title || 'تیتر استوری' %></h1>
-        <p class="story__subtitle"><%= data.subtitle || 'متنی که میتونه این پایین قرار بگیره' %></p>
+        <h1 id="storyTitle" class="story__title"><%= data.title || 'تیتر استوری' %></h1>
+        <p id="storySubtitle" class="story__subtitle"><%= data.subtitle || 'متنی که میتونه این پایین قرار بگیره' %></p>
       </header>
 
       <div class="story__media" role="img" aria-label="<%= data.imageAlt || 'story image' %>"
@@ -244,6 +254,18 @@
     <div class="story__handle"><%= data.handleText || '@minimalfoodie' %></div>
   </div>
   </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const subtitle = document.getElementById("storySubtitle");
+      const title = document.getElementById("storyTitle");
+
+      if (subtitle && subtitle.textContent.length > 200) {
+        subtitle.classList.add("small");
+        title.classList.add("small");
+      }
+    });
+  </script>
 </body>
 
 </html>
