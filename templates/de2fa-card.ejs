@@ -74,7 +74,7 @@
     }
 
     .story__title.small {
-      font-size: calc(clamp(42px, 6vw, 84px) * 0.66);
+      font-size: calc(clamp(42px, 6vw, 84px) * 0.75);
       /* 2/3 */
     }
 
@@ -103,12 +103,12 @@
 
     /* Subtitle scaling */
     .story__subtitle.scale-2-3 {
-      font-size: calc(3rem * 0.66);
+      font-size: calc(4rem * 0.66);
       /* 2/3 */
     }
 
     .story__subtitle.scale-1-2 {
-      font-size: calc(3rem * 0.5);
+      font-size: calc(4rem * 0.5);
       /* 1/2 */
     }
 
@@ -275,7 +275,7 @@
 
         if (len > 200) {
           subtitle.classList.add("scale-2-3"); // 2/3 size
-          title.classList.add("smaller"); // shrink title
+          title.classList.add("small"); // shrink title
         }
       }
     });
