@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="<%= data.lang || 'en' %>" dir="<%= data.dir || 'ltr' %>">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=<%= data.vw || 1080 %>, initial-scale=1" />
+  <title><%= data.title || 'Instagram Story' %></title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Montserrat:wght@300;400;500&display=swap"
+    rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap" rel="stylesheet">
+
+  <style>
+    /* Canvas */
+    html,
+    body {
+      margin: 0;
+      height: 100%
+    }
+
+    body {
+      background: #f8f5f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      min-height: 100vh;
+    }
+
+    /* Frame fills viewport; renderer controls final size */
+    .story-frame {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .story {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: linear-gradient(to bottom, #f5f0e8, #ebe6df);
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .1);
+    }
+
+    .story__texture {
+      position: absolute;
+      inset: 0;
+      opacity: .5;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23d6cfc7' fill-opacity='0.2' fill-rule='evenodd'/%3E%3C/svg%3E");
+    }
+
+    /* Header (top-end) */
+    .story__header {
+      display: block;
+      /* Ensure the header stacks its children vertically */
+      position: absolute;
+      top: 5%;
+      inset-inline: 8%;
+      text-align: start;
+      /* Align to the right in RTL */
+      direction: rtl;
+      /* Set text direction to RTL */
+
+    }
+
+    .story__title.small {
+      font-size: calc(clamp(42px, 6vw, 84px) * 1.30);
+      /* 2/3 */
+    }
+
+    .story__title {
+      position: absolute;
+      top: 18rem;
+      z-index: 2;
+      font-family: "Vazirmatn", "Cormorant Garamond", serif;
+      margin: 0;
+      letter-spacing: 1px;
+      font-size: clamp(42px, 6vw, 84px);
+      font-weight: 900;
+      color: #202020;
+      text-align: center;
+      /* Align text to the right */
+      background-color: rgb(240, 240, 240);
+      /* Add white background */
+      padding: 8px 12px;
+      /* Add padding for spacing */
+      border-radius: 8px;
+      /* Optional: Add rounded corners */
+      display: inline-block;
+      /* Restrict background to text width */
+      margin-bottom: 8px;
+      /* Add spacing below the title */
+      text-shadow: 1px 1px 1px rgb(0, 38, 255),
+        2px 2px 1px rgb(0, 174, 255);
+    }
+
+
+    /* Subtitle scaling */
+    .story__subtitle.scale-2-3 {
+      font-size: calc(4rem * 0.66);
+      /* 2/3 */
+    }
+
+    .story__subtitle.scale-1-2 {
+      font-size: calc(4rem * 0.5);
+      /* 1/2 */
+    }
+
+
+
+    .story__subtitle {
+      position: relative;
+      z-index: 1;
+      font-family: "Vazirmatn", "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      margin-top: 8px;
+      font-size: 3rem;
+      font-weight: 500;
+      letter-spacing: 2px;
+      color: #3f3f3f;
+      text-transform: uppercase;
+      background-color: white;
+      /* Add white background */
+      padding: 4px 8px;
+      /* Add padding for spacing */
+      border-radius: 6px;
+      /* Optional: Add rounded corners */
+      display: inline-block;
+      /* Restrict background to text width */
+      background: rgba(255, 255, 255, 0.8);
+
+    }
+
+    /* Media (bottom ~2/3) */
+    .story__media {
+      position: absolute;
+      z-index: 1;
+      top: 0;
+      left: 4%;
+      right: 4%;
+      bottom: 0;
+      background-position: center;
+      background-size: contain;
+      background-repeat: no-repeat;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
+      overflow: hidden;
+    }
+
+    /* Media (bottom ~2/3) */
+    .background__reels__media {
+      position: absolute;
+      z-index: 0;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-color: #f8f5f2;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
+      overflow: hidden;
+      filter: blur(50px);
+    }
+
+
+    /* Footer (caption & tags) */
+    .story__footer {
+      position: absolute;
+      bottom: 14%;
+      left: 10%;
+      right: 10%;
+      text-align: center;
+    }
+
+    .story__caption {
+      margin: 0;
+      color: #5c5c5c;
+      font-weight: 400;
+      letter-spacing: 1px;
+      font-size: clamp(22px, 2.2vw, 34px);
+    }
+
+    .story__tags {
+      margin-top: 10px
+    }
+
+    .story__tag {
+      display: inline-block;
+      margin-inline: 8px 0;
+      color: #8a8a8a;
+      font-weight: 300;
+      font-size: clamp(16px, 1.8vw, 22px);
+    }
+
+    .story__tag::before {
+      content: "#";
+      margin-inline-end: 4px;
+    }
+
+    /* Handle (blue pill) */
+    .story__handle {
+      position: absolute;
+      z-index: 3;
+      bottom: 26%;
+      inset-inline-end: 10%;
+      background: #1d4ed8;
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 3rem;
+      box-shadow: 0 12px 28px rgba(29, 78, 216, .3);
+    }
+
+    /* Debug overlay */
+    .story__debug {
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 0, 0, .08);
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    .story__debug-info {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      background: rgba(0, 0, 0, .8);
+      color: #fff;
+      padding: 6px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="story-frame">
+    <div class="story">
+      <% if (data.debug) { %>
+      <div class="story__debug">
+        <div class="story__debug-info">
+          Lang: <%= data.lang || 'en' %> | Dir: <%= data.dir || 'ltr' %><br />
+          Width: <%= width || 1080 %>px | Height: <%= height || 1920 %>px
+        </div>
+      </div>
+      <% } %>
+
+      <div class="story__texture"></div>
+
+      <header class="story__header">
+        <h1 id="storyTitle" class="story__title"><%= data.title || 'تیتر استوری' %></h1>
+      </header>
+
+      <div class="story__media" role="img" aria-label="<%= data.imageAlt || 'story image' %>"
+        style="background-image: url('<%- encodeURI(data.imageUrl || 'https://via.placeholder.com/1080x1920') %>');">
+      </div>
+
+      <div class="background__reels__media" role="img" aria-label="<%= data.imageAlt || 'story image' %>"
+        style="background-image: url('<%- encodeURI(data.imageUrl || 'https://via.placeholder.com/1080x1920') %>');">
+      </div>
+
+    </div>
+
+    <div class="story__handle"><%= data.handleText || '@minimalfoodie' %></div>
+  </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const subtitle = document.getElementById("storySubtitle");
+      const title = document.getElementById("storyTitle");
+
+
+      if (subtitle) {
+        const len = subtitle.textContent.trim().length;
+
+        if (len > 150 && len <= 300) {
+          subtitle.classList.add("scale-2-3"); // 2/3 size
+          title.classList.add("small"); // shrink title
+        }
+
+        if (len > 300) {
+          subtitle.classList.add("scale-1-2"); // 2/3 size
+          title.classList.add("small"); // shrink title
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>
