@@ -97,3 +97,124 @@ curl -X POST http://localhost:3000/api/render/project/<projectId>/template/<temp
 ```
 
 Replace `<projectId>` with your project ID and `<templateId>` with the template ID you want to use.
+
+# Debugging in VS Code (Node ESM + Express + Playwright)
+
+> Works with your current `package.json` (ESM, `"type": "module"`).
+> Requires Node **18+** (recommended: Node 20).
+
+---
+
+## 1) Prerequisites
+
+```bash
+# Check Node version
+node -v  # should be >= 18
+
+# Install Playwright Chromium deps (already scripted)
+npm run render-build
+```
+
+(Optional) Load `.env` automatically by adding this on top of `server.js`:
+
+```js
+import "dotenv/config";
+```
+
+---
+
+## 2) VS Code launch configuration
+
+Create **`.vscode/launch.json`**:
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch: server.js (Node ESM)",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/server.js",
+      "runtimeArgs": ["--inspect=9229", "--enable-source-maps"],
+      "cwd": "${workspaceFolder}",
+      "envFile": "${workspaceFolder}/.env",
+      "env": {
+        "NODE_ENV": "development",
+        "PWDEBUG": "0",
+        "PORT": "3000"
+      },
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "Attach: 9229",
+      "type": "node",
+      "request": "attach",
+      "port": 9229,
+      "restart": true,
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**"]
+    }
+  ]
+}
+```
+
+> If VS Code uses the **wrong Node** (and you see `SyntaxError: Unexpected identifier` on `import`):
+> find your Node 18/20 path and set `"runtimeExecutable"` in the first config.
+
+**Find Node path (Linux/macOS):**
+
+```bash
+node -v
+command -v node
+readlink -f "$(command -v node)"   # real path
+```
+
+**Find Node path (Windows PowerShell):**
+
+```powershell
+node -v
+where.exe node
+```
+
+Then add, for example:
+
+```json
+"runtimeExecutable": "/home/you/.nvm/versions/node/v20.16.0/bin/node"
+```
+
+---
+
+## 4) Playwright in “headed” mode while debugging
+
+Add this tweak (if not already present) so Chromium opens visibly and slows a bit when `PWDEBUG=1`:
+
+```js
+let browser;
+async function getBrowser() {
+  if (!browser) {
+    const headed = process.env.PWDEBUG === "1" || process.env.HEADFUL === "1";
+    browser = await chromium.launch({
+      headless: !headed,
+      devtools: headed,
+      slowMo: headed ? 100 : 0,
+      args: ["--font-render-hinting=medium"],
+    });
+  }
+  return browser;
+}
+```
+
+- In **“Launch: Nodemon (auto-reload)”**, `PWDEBUG=1` is set → headed mode on.
+- In **“Launch: server.js”**, `PWDEBUG=0` → headless (faster).
+
+---
+
+## 5) Start debugging
+
+- Open VS Code → **Run and Debug**.
+- Pick **Launch: server.js (Node ESM)** (simple) or **Launch: Nodemon (auto-reload)** (hot-reload).
+- Set breakpoints anywhere (routes, EJS render, Playwright page workflow) and press **F5**.
+
+---
