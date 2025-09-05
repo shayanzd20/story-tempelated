@@ -98,6 +98,14 @@ curl -X POST http://localhost:3000/api/render/project/<projectId>/template/<temp
 
 Replace `<projectId>` with your project ID and `<templateId>` with the template ID you want to use.
 
+### Sample Request to Get Template for Testing in Browser
+
+```bash
+curl -X GET http://localhost:3000/templates/project/de2fa-card/template/reels-thumbnail-de2fa-card
+```
+
+Replace `de2fa-card` with your project ID and `reels-thumbnail-de2fa-card` with the template ID you want to test.
+
 # Debugging in VS Code (Node ESM + Express + Playwright)
 
 > Works with your current `package.json` (ESM, `"type": "module"`).
