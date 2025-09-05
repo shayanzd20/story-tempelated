@@ -126,6 +126,15 @@ function resolveTemplatePath({ projectId, templateId }) {
 
 // --- Render API (dynamic projectId + templateId) ---
 app.post("/api/render/project/:projectId/template/:templateId", async (req, res) => {
+
+  // log inputs
+  console.log(`[${new Date().toISOString()}] Render request:`, {
+    projectId: req.params.projectId,
+    templateId: req.params.templateId,
+    width: req.body.width,
+    height: req.body.height,
+    dataKeys: Object.keys(req.body.data || {}),
+  });
   const { projectId, templateId } = req.params;
   const { width = 768, height = 1365, data = {} } = req.body;
 
