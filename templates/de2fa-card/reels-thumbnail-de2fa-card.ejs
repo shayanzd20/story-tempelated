@@ -146,8 +146,8 @@
       z-index: 1;
       top: 40%;
       left: 10%;
-      right: 8%;
-      bottom: 8%;
+      right: 4%;
+      bottom: 4%;
       background-position: center;
       background-size: contain;
       background-repeat: no-repeat;
@@ -280,21 +280,28 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      const subtitle = document.getElementById("storySubtitle");
       const title = document.getElementById("storyTitle");
 
+      let long =
+        "هامبورگ داره با اتوبوس‌های خودرانش آینده رو تست می‌کنه! از سال بعد مسافرها هم می‌تونن سوار این فناوری بشن. برو ثبت نام کن!" // 123
+      let short = "فولکس‌واگن تو برزیل گیر افتاد: برده‌داری مدرن در آمازون!" // 55
+      // Array of light colors
+      const lightColors = [
+        "rgba(255, 223, 186, 0.8)", // Light Peach
+        "rgba(186, 255, 201, 0.8)", // Light Mint
+        "rgba(186, 238, 255, 0.8)", // Light Blue
+        "rgba(255, 186, 238, 0.8)", // Light Pink
+        "rgba(238, 255, 186, 0.8)" // Light Yellow
+      ];
 
-      if (subtitle) {
-        const len = subtitle.textContent.trim().length;
+      // Randomly select a color
+      const randomColor = lightColors[Math.floor(Math.random() * lightColors.length)];
 
-        if (len > 150 && len <= 300) {
-          subtitle.classList.add("scale-2-3"); // 2/3 size
-          title.classList.add("small"); // shrink title
-        }
-
-        if (len > 300) {
-          subtitle.classList.add("scale-1-2"); // 2/3 size
-          title.classList.add("small"); // shrink title
+      // Apply the random color to the title background
+      if (title) {
+        title.style.backgroundColor = randomColor;
+        if (title.textContent.trim().length > 90) {
+          title.style.fontSize = "calc(5rem * 0.66)"; // Reduce font size to 2/3
         }
       }
     });
