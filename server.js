@@ -185,6 +185,7 @@ app.post("/api/render/project/:projectId/template/:templateId", async (req, res)
   }
 });
 
+app.get('/health', (_, res) => res.json({ ok: true, memoryUsage: process.memoryUsage() }));
 
 process.on("SIGINT", async () => { if (browser) await browser.close(); process.exit(0); });
 
